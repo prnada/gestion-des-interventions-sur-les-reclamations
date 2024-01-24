@@ -43,8 +43,13 @@ return [
         'front' => [
             'driver' => 'session',
             'provider' => 'frontusers',
+     
         ],
-        
+        // 'intervenant' =>[
+        //     'driver' => 'session',
+        //     'provider' => 'intervenants',
+     
+        // ],
     ],
 
     /*
@@ -75,9 +80,9 @@ return [
             'model' => App\Models\Frontuser::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
+        // 'intervenants' => [
+        //     'driver' => 'eloquent',
+        //     'model' =>App\Models\intervenants::class,
         // ],
     ],
 

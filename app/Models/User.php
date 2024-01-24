@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+ 
+ 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -19,10 +21,16 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
+        'id',
+        'nom',
+        'prenom',
         'email',
         'password',
-        'profile'
+        'telephone',
+        'profile',
+         
+        'id_met',
+        'id_str',
     ];
 
     /**
@@ -43,4 +51,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function metier(){
+        return $this->belongsTo(metiers::class ,'id_met','id');
+    }
+    public function structure(){
+        return $this->belongsTo(structures::class ,'id_str','id');
+    }
+    // public function role(){
+    //     return $this->belongsTo(Role::class ,'role_id','id');
+    // }
+
+    public function reclamations()
+    {
+        return $this->hasMany(reclamation::class, 'user_id' ,'id');
+    }
+
+    // public function interventions()
+    // {
+    //     return $this->hasMany(interventions::class, 'user_id' ,'id');
+    // }
 }

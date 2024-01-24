@@ -35,16 +35,38 @@ class ProfileController extends Controller
     }
 
 
-    public function update(Request $request)
+    // public function update(Request $request)
+    // {
+    //     $user = auth()->user();
+
+    //     $validated = $request->validate([
+    //         'nom'=>'required',
+    //         'email' => 'required|email|unique:users,email,'.$user->id.',id',
+    //     ]);
+
+    //     if($request->password != null){
+    //         $request->validate([
+    //             'password' => 'required|confirmed'
+    //         ]);
+    //         $validated['password'] = bcrypt($request->password);
+    //     }
+
+    //     if($request->hasFile('profile')){
+    //         if($name = $this->saveImage($request->profile)){
+    //             $validated['profile'] = $name;
+    //         }
+    //     }
+
+    //     $user->update($validated);
+
+    //     return redirect()->back()->withSuccess('Utilisateur modifié !');
+    // }
+    public function update(Request $request, User $user)
     {
-        $user = auth()->user();
-
         $validated = $request->validate([
-            'name'=>'required',
             'email' => 'required|email|unique:users,email,'.$user->id.',id',
+            'password'=>'required|confirmed',
         ]);
-
-
 
         if($request->password != null){
             $request->validate([
@@ -53,14 +75,7 @@ class ProfileController extends Controller
             $validated['password'] = bcrypt($request->password);
         }
 
-        if($request->hasFile('profile')){
-            if($name = $this->saveImage($request->profile)){
-                $validated['profile'] = $name;
-            }
-        }
-
         $user->update($validated);
-
-        return redirect()->back()->withSuccess('User updated !!!');
+        return redirect()->back()->withSuccess('Utilisayeur modifié !!!');
     }
 }

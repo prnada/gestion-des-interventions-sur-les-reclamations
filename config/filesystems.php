@@ -33,6 +33,11 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
+            
+        ],
+        'reclamations' => [
+            'driver' => 'local',
+            'root' => 'C:\reclamations',  
         ],
 
         'public' => [

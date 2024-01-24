@@ -18,9 +18,15 @@ class Frontuser extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
+        'id',
+        'nom',
+        'prenom',
         'email',
+        'telephone',
         'password',
+        'disponibilite',
+        'id_met',
+        'id_str'
     ];
 
     /**
@@ -41,4 +47,17 @@ class Frontuser extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function structure(){
+        return $this->belongsTo(structures::class, 'id_str', 'id');
+    }
+    public function metier(){
+        return $this->belongsTo(metiers::class, 'id_met', 'id');
+    }
+
+
+    public function interventions()
+    {
+        return $this->hasMany(reclamation::class, 'id_fonct' ,'id');
+    }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
+use App\Models\Frontuser;
+use App\Models\metiers;
+use App\Models\structures;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
@@ -32,8 +35,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user= User::latest()->get();
-
+        $user= User::paginate(5);
+ 
         return view('setting.user.index',['users'=>$user]);
     }
 
@@ -45,8 +48,31 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::get();
-        return view('setting.user.new',['roles'=>$roles]);
+        //$frontusers=Frontuser::all();
+        $metiers=metiers::all();
+        $structures=structures::all();
+        return view('setting.user.new',compact("roles","metiers","structures"));
     }
+//     public function createUserFromFonctionnaire(Request $request)
+//     {
+ 
+//     $id_fct = $request->input('$id_fct');
+//     $fonctionnaire = Frontuser::findOrFail($id_fct);
+     
+//     $user = new User([
+//         'nom' => $fonctionnaire->Nom,
+//         'prenom' => $fonctionnaire->Prenom,
+//         'email' => $fonctionnaire->email,
+//         'password' => $fonctionnaire->password,
+//         'id_fct' => $id_fct
+//     ]);
+//     $user->syncRoles($request->roles);
+     
+//     $user->save();
+
+ 
+
+// }
 
     /**
      * Store a newly created resource in storage.
@@ -58,14 +84,31 @@ class UserController extends Controller
     {
 
         $request->validate([
-            'name'=>'required',
+            'nom'=>'required',
+            'prenom'=>'required',
             'email' => 'required|email|unique:users',
-            'password'=>'required|confirmed'
+            'password'=>'required|confirmed',
+            //'id_fct'=>"required",
         ]);
         $user = User::create([
-            'name'=>$request->name,
+            'nom'=>$request->nom,
+            'prenom'=>$request->prenom,
             'email'=>$request->email,
             'password'=> bcrypt($request->password),
+            'telephone'=>$request->telephone,
+            'id_met'=>$request->id_met,
+            //'id_fct'=>$request->id_fct,
+           // 'role_id'=>$request->role_id,
+        ]);
+        Frontuser::create([
+            'nom'=>$request->nom,
+            'prenom'=>$request->prenom,
+            'email'=>$request->email,
+            'telephone'=>$request->telephone,
+            'password'=> bcrypt($request->password),
+            'id'=>$request->id,
+            'id_met'=>$request->id_met,
+
         ]);
         $user->syncRoles($request->roles);
         return redirect()->back()->withSuccess('User created !!!');
@@ -92,7 +135,10 @@ class UserController extends Controller
     {
         $role = Role::get();
         $user->roles;
-       return view('setting.user.edit',['user'=>$user,'roles' => $role]);
+        $metiers=metiers::all();
+        $structures=structures::all();
+        
+       return view('setting.user.edit',['user'=>$user,'roles' => $role,'metiers'=>$metiers,'structures'=>$structures]);
     }
 
     /**
@@ -105,8 +151,10 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name'=>'required',
+            'nom'=>'required',
+            'prenom'=>'required',
             'email' => 'required|email|unique:users,email,'.$user->id.',id',
+            'password'=>'required|confirmed',
         ]);
 
         if($request->password != null){
@@ -119,7 +167,7 @@ class UserController extends Controller
         $user->update($validated);
 
         $user->syncRoles($request->roles);
-        return redirect()->back()->withSuccess('User updated !!!');
+        return redirect()->back()->withSuccess('Utilisayeur modifié !!!');
     }
 
     /**
@@ -128,9 +176,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
+    public function destroy(User $user)
     {
-        $role->delete();
-        return redirect()->back()->withSuccess('Role deleted !!!');
+        $user->delete();
+        return redirect()->back()->withSuccess('Utilisateur supprimé!!');
     }
+    // public function destroyU(User $user)
+    // {   
+    //     $user->delete();
+    //     return back()-> withSuccess("utilisateur supprimé!");
+    // }
 }
